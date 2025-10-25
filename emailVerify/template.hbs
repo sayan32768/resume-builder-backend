@@ -1,11 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Verification</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background-color: #007BFF;
+      color: #ffffff;
+      text-align: center;
+      padding: 24px 16px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .content {
+      padding: 24px 32px;
+      text-align: center;
+    }
+    .content p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #007BFF;
+      color: #ffffff !important;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      padding: 16px;
+      background-color: #f4f6f8;
+    }
+  </style>
 </head>
 <body>
-    <h1>HELLO</h1>
+  <div class="container">
+    <div class="header">
+      <h1>Verify Your Email</h1>
+    </div>
+    <div class="content">
+      <p>Hi there! 👋</p>
+      <p>Thanks for signing up. Please confirm your email address by clicking the button below:</p>
+      <a class="button" href="http://localhost:8000/user/verify?token={{token}}" target="_blank">
+        Verify Email
+      </a>
+      <p>If you did not create an account, you can safely ignore this email.</p>
+    </div>
+    <div class="footer">
+      <p>© {{year}} Resume. All rights reserved.</p>
+    </div>
+  </div>
 </body>
 </html>

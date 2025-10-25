@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 const linksSchema = new mongoose.Schema({
     name: {
         type: String,
+        enum: ["LINKEDIN", "INSTAGRAM", "GITHUB"],
         required: true,
     },
 
-    url: {
+    link: {
         type: String,
         required: true,
     }
@@ -26,14 +27,14 @@ const personalDetailsSchema = new mongoose.Schema({
         required: true,
     },
 
-    phoneNumber: {
+    phone: {
         type: String,
         required: true,
     },
 
     socials: {
         type: [linksSchema],
-        required: true,
+        default: [],
     },
 
     address: {
@@ -50,17 +51,15 @@ const gradesSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ["Percentage", "CGPA"],
-        required: true
     },
 
-    value: {
+    score: {
         type: String,
-        required: true
     },
 
     message: {
         type: String,
-        default: null
+        default: ""
     }
 })
 
@@ -76,14 +75,22 @@ const educationDetailsSchema = new mongoose.Schema({
 
     grades: {
         type: gradesSchema,
+        default: undefined
     },
 
-    startDate: {
-        type: Date,
-    },
+    dates: {
+        type: {
+            startDate: {
+                type: Date,
+                default: undefined
+            },
 
-    endDate: {
-        type: Date,
+            endDate: {
+                type: Date,
+                default: undefined
+            },
+        },
+        default: undefined
     },
 
     location: {
@@ -107,7 +114,13 @@ const projectsSchema = new mongoose.Schema({
     },
 
     links: {
-        type: [linksSchema],
+        type: [{
+            link: {
+                type: String,
+                required: true
+            }
+        }],
+        default: []
     }
 })
 
@@ -120,6 +133,11 @@ const certificationSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+    },
+
+    issueDate: {
+        type: Date,
+        default: undefined
     },
 
     link: {
@@ -141,12 +159,19 @@ const experienceSchema = new mongoose.Schema({
         type: String,
     },
 
-    startDate: {
-        type: Date,
-    },
+    dates: {
+        type: {
+            startDate: {
+                type: Date,
+                default: undefined
+            },
 
-    endDate: {
-        type: Date,
+            endDate: {
+                type: Date,
+                default: undefined
+            },
+        },
+        default: undefined
     },
 
     workDescription: {
@@ -169,10 +194,14 @@ const resumeSchema = new mongoose.Schema({
     educationDetails: {
         type: [educationDetailsSchema],
         required: true,
+        validate: [arr => arr.length > 0, "At least one education is required"]
     },
 
     skills: {
-        type: [String],
+        type: [{
+            skillName: String
+        }],
+        default: []
     },
 
     professionalExperience: {

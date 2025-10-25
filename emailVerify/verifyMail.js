@@ -17,7 +17,8 @@ export const verifyMail = async (token, email) => {
 
     const template = handlebars.compile(emailTemplateSource)
     const htmlToSend = template({
-        token: encodeURIComponent(token)
+        token: encodeURIComponent(token),
+        year: new Date().getFullYear()
     })
 
     const transporter = nodemailer.createTransport({
