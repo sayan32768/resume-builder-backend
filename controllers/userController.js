@@ -37,7 +37,7 @@ export const registerUser = async (req, res) => {
 
         const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY, { expiresIn: "10m" })
 
-        // Verify the mail
+        // Send the verification mail
         verifyMail(token, email)
 
         newUser.token = token
@@ -46,7 +46,7 @@ export const registerUser = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: 'User registered successfully',
+            message: 'Verification Email is sent. Please follow the steps mentioned in the email',
             data: newUser
         })
     } catch (error) {
@@ -120,6 +120,7 @@ export const verification = async (req, res) => {
 }
 
 export const loginUser = async (req, res) => {
+    console.log("HERE")
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -133,7 +134,7 @@ export const loginUser = async (req, res) => {
         if (!user) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized Access"
+                message: "You must register first before logging in"
             })
         }
 
@@ -165,7 +166,7 @@ export const loginUser = async (req, res) => {
         await Session.create({ userId: user._id })
 
         // Generate the access token
-        const accessToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "10d" })
+        const accessToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "1h" })
 
         // Generate the refresh token
         const refreshToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "30d" })
@@ -174,11 +175,23 @@ export const loginUser = async (req, res) => {
 
         await user.save()
 
-        return res.status(200).json({
+        res.cookie("access_token", accessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000
+        });
+
+        res.cookie("refresh_token", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({
             success: true,
             message: `Welcome back ${user.username}`,
-            accessToken,
-            refreshToken,
             data: user
         })
     } catch (error) {
@@ -220,3 +233,44 @@ export const logoutUser = async (req, res) => {
 //     }
 // }
 
+export const getUserDetails = async (req, res) => {
+    // console.log("SSSSSSSSSS")
+    try {
+        const user = await User.findById({ _id: req.userId })
+        return res.status(200).json({
+            success: true,
+            user: user,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Some error occurred"
+        });
+    }
+}
+
+export const refreshToken = async (req, res) => {
+    try {
+        // console.log("SS")
+        const refreshToken = req.cookies.refresh_token;
+        // console.log(refreshToken)
+        if (!refreshToken) return res.status(403).json({ success: false, message: "No refresh token" });
+
+        const decoded = jwt.verify(refreshToken, process.env.SECRET_KEY);
+
+        const session = await Session.findOne({ userId: decoded.id });
+        if (!session) return res.status(403).json({ success: false, message: "Invalid session" });
+
+        const newAccessToken = jwt.sign({ id: decoded.id }, process.env.SECRET_KEY, { expiresIn: "1h" });
+
+        res.cookie("access_token", newAccessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000,
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        return res.status(403).json({ success: false, message: "Refresh failed" });
+    }
+};
