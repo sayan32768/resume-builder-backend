@@ -209,6 +209,20 @@ export const logoutUser = async (req, res) => {
     try {
         const userId = req.userId;
 
+        res.clearCookie("access_token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            path: "/",
+        });
+
+        res.clearCookie("refresh_token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            path: "/",
+        });
+
         await Session.deleteMany({ userId })
 
         await User.findByIdAndUpdate(userId, { isLoggedIn: false })
