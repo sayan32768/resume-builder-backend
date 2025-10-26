@@ -59,17 +59,20 @@ export const registerUser = async (req, res) => {
 
 // Controller for verification of the user using jwt
 export const verification = async (req, res) => {
+    console.log("HERE")
     try {
-        // if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        //     return res.status(401).json({
-        //         success: false,
-        //         message: "Authorization token is missing or invalid"
-        //     })
-        // }
+        const authHeader = req.headers.authorization;
 
-        // const token = authHeader.split(" ")[1]
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
+                success: false,
+                message: "Authorization token is missing or invalid"
+            })
+        }
 
-        const token = req.query.token;
+        const token = authHeader.split(" ")[1]
+
+        // const token = req.query.token;
 
         if (!token) {
             return res.status(400).json({

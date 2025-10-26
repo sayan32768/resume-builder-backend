@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { required } from "zod/mini";
 
 const linksSchema = new mongoose.Schema({
     name: {
@@ -184,6 +185,12 @@ const resumeSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
+    },
+
+    resumeType: {
+        type: String,
+        enum: ["Classic", "Modern"],
+        required: true,
     },
 
     personalDetails: {
