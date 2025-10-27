@@ -137,7 +137,7 @@ export const resumeSchema = z.object({
     }),
     personalDetails: personalFormSchema,
     educationDetails: z.array(educationFormSchema).min(1, "At least one education is required"),
-    skills: z.array(skillSchema).min(1, "At least one skill is required"),
+    skills: z.array(skillSchema).optional(),
     professionalExperience: z.array(experienceSchema).optional(),
     projects: z.array(projectSchema).optional(),
     otherExperience: z.array(experienceSchema).optional(),

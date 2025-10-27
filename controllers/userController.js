@@ -253,7 +253,7 @@ export const logoutUser = async (req, res) => {
 export const getUserDetails = async (req, res) => {
     // console.log("SSSSSSSSSS")
     try {
-        const user = await User.findById({ _id: req.userId })
+        const user = await User.findById({ _id: req.userId }, { email: 1, fullName: 1, username: 1 })
         return res.status(200).json({
             success: true,
             user: user,
