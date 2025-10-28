@@ -132,6 +132,7 @@ export const certificationSchema = z.object({
 });
 
 export const resumeSchema = z.object({
+    resumeTitle: z.string().min(1, "Title is required"),
     resumeType: z.enum(["Classic", "Modern"], {
         message: "Choose a valid resume type"
     }),

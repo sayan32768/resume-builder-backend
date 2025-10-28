@@ -187,6 +187,11 @@ const resumeSchema = new mongoose.Schema({
         ref: "User"
     },
 
+    resumeTitle: {
+        type: "String",
+        required: true,
+    },
+
     resumeType: {
         type: String,
         enum: ["Classic", "Modern"],

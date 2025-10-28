@@ -5,6 +5,8 @@ export const create = async (req, res) => {
         const id = req.userId
         const data = req.body
 
+        console.log(data)
+
         const resume = await Resume.create({
             userId: id,
             ...data
@@ -26,7 +28,7 @@ export const create = async (req, res) => {
 export const getPastResumes = async (req, res) => {
     try {
         const id = req.userId;
-        const resumes = await Resume.find({ userId: id }, { _id: 1, resumeType: 1, updatedAt: 1 });
+        const resumes = await Resume.find({ userId: id }, { _id: 1, resumeTitle: 1, resumeType: 1, updatedAt: 1 });
 
         if (!resumes || resumes.length === 0) {
             return res.status(404).json({
