@@ -1,11 +1,12 @@
 import express from "express";
 import 'dotenv/config';
-import connectDB from "../../database/db.js";
+// import connectDB from "../../database/db.js";
 import userRoute from '../../routes/userRoute.js';
 import resumeRoute from '../../routes/resumeRoute.js';
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import serverless from "serverless-http";
+const connectDB = require("../../database/db.js")
 
 const app = express();
 
