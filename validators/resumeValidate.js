@@ -38,8 +38,8 @@ export const educationFormSchema = z.object({
     degree: z.string().min(1, "Degree is required"),
     dates: z
         .object({
-            startDate: z.coerce.date().optional(),
-            endDate: z.coerce.date().optional(),
+            startDate: z.coerce.date().nullable().optional(),
+            endDate: z.coerce.date().nullable().optional(),
         })
         .optional()
         .refine(
@@ -79,8 +79,8 @@ export const experienceSchema = z.object({
     position: z.string().optional(),
     dates: z
         .object({
-            startDate: z.coerce.date().optional(),
-            endDate: z.coerce.date().optional(),
+            startDate: z.coerce.date().nullable().optional(),
+            endDate: z.coerce.date().nullable().optional(),
         })
         .optional()
         .refine(
@@ -117,7 +117,7 @@ export const certificationSchema = z.object({
     issuingAuthority: z.string().min(1, "This is a required field"),
     title: z.string().min(1, "Title is required"),
     issueDate: z
-        .coerce.date()
+        .coerce.date().nullable()
         .optional()
         .refine(
             (obj) => {

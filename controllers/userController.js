@@ -7,9 +7,9 @@ import jwt from "jsonwebtoken"
 // Controller for registering a new user into the Database
 export const registerUser = async (req, res) => {
     try {
-        const { fullName, username, email, password } = req.body
+        const { fullName, email, password } = req.body
 
-        if (!fullName || !username || !email || !password) {
+        if (!fullName || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
@@ -30,7 +30,6 @@ export const registerUser = async (req, res) => {
         // Finally create the new user if it passes above checks
         const newUser = await User.create({
             fullName,
-            username,
             email,
             password: hashedPassword
         })
@@ -180,21 +179,21 @@ export const loginUser = async (req, res) => {
 
         res.cookie("access_token", accessToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             maxAge: 60 * 60 * 1000
         });
 
         res.cookie("refresh_token", refreshToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json({
             success: true,
-            message: `Welcome back ${user.username}`,
+            message: `Welcome back ${user.fullName}`,
             data: user
         })
     } catch (error) {
@@ -211,15 +210,15 @@ export const logoutUser = async (req, res) => {
 
         res.clearCookie("access_token", {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             path: "/",
         });
 
         res.clearCookie("refresh_token", {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             path: "/",
         });
 
@@ -281,8 +280,8 @@ export const refreshToken = async (req, res) => {
 
         res.cookie("access_token", newAccessToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "strict",
             maxAge: 60 * 60 * 1000,
         });
 

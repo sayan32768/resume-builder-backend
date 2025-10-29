@@ -1,4 +1,5 @@
 import { Resume } from "../models/resumeModel.js"
+import puppeteer from "puppeteer";
 
 export const create = async (req, res) => {
     try {
@@ -28,7 +29,7 @@ export const create = async (req, res) => {
 export const getPastResumes = async (req, res) => {
     try {
         const id = req.userId;
-        const resumes = await Resume.find({ userId: id }, { _id: 1, resumeTitle: 1, resumeType: 1, updatedAt: 1 });
+        const resumes = await Resume.find({ userId: id }, { _id: 1, resumeTitle: 1, resumeType: 1, updatedAt: 1 }).sort({ updatedAt: -1 });
 
         if (!resumes || resumes.length === 0) {
             return res.status(404).json({
@@ -103,3 +104,57 @@ export const getResumeById = async (req, res) => {
         res.status(500).json({ success: false, message: "Error fetching resume" });
     }
 }
+
+export const deleteResume = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.userId;
+
+        const resume = await Resume.findOne({ _id: id, userId });
+
+        if (!resume) {
+            return res.status(404).json({
+                success: false,
+                message: "Resume not found or you are not authorized",
+            });
+        }
+
+        await Resume.deleteOne({ _id: id });
+
+        res.status(200).json({
+            success: true,
+            message: "Resume deleted successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete resume, try again",
+        });
+    }
+};
+
+export const download = async (req, res) => {
+    try {
+        const { htmlContent } = req.body;
+
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+
+        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
+        const pdfBuffer = await page.pdf({
+            format: "A4",
+            printBackground: true,
+        });
+
+        await browser.close();
+
+        res.setHeader("Content-Disposition", "attachment; filename=code.pdf");
+        res.setHeader("Content-Type", "application/pdf");
+        res.status(200).send(pdfBuffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error generating PDF");
+    }
+};
