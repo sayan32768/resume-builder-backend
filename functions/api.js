@@ -6,6 +6,7 @@ import resumeRoute from '../routes/resumeRoute.js';
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import ServerlessHttp from "serverless-http";
+import mongoose from "mongoose";
 
 const app = express();
 
