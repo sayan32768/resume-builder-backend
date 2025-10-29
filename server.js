@@ -24,7 +24,9 @@ app.use('/user', userRoute)
 app.use('/resume', resumeRoute)
 
 // Run the server
-app.listen(PORT, () => {
-    connectDB()
-    console.log(`Server is listening at PORT: ${PORT}`)
-})
+// app.listen(PORT, () => {
+//     connectDB()
+//     console.log(`Server is listening at PORT: ${PORT}`)
+// })
+
+export default app;
