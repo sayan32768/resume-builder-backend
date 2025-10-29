@@ -6,11 +6,17 @@ import resumeRoute from '../../routes/resumeRoute.js';
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import serverless from "serverless-http";
-const connectDB = require("../../database/db.js")
 
 const app = express();
 
-connectDB();
+// connectDB();
+
+try {
+    await mongoose.connect(`${process.env.MONGO_URI}/resume-builder`)
+    console.log('MongoDB connected successfully!')
+} catch (e) {
+    console.log(`MongoDB Connection Error, ${e}`)
+}
 
 app.use(express.json());
 app.use(cookieParser());
