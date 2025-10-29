@@ -34,7 +34,7 @@ export const registerUser = async (req, res) => {
             password: hashedPassword
         })
 
-        const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY, { expiresIn: "10m" })
+        const token = jwt.sign({ id: newUser._id }, process.env.MAIL_SECRET_KEY, { expiresIn: "10m" })
 
         // Send the verification mail
         verifyMail(token, email)
@@ -83,7 +83,7 @@ export const verification = async (req, res) => {
         let decoded;
 
         try {
-            decoded = jwt.verify(token, process.env.SECRET_KEY)
+            decoded = jwt.verify(token, process.env.MAIL_SECRET_KEY)
         } catch (error) {
             if (error.name === "TokenExpiredError") {
                 return res.status(400).json({
