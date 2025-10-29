@@ -11,12 +11,15 @@ const app = express();
 
 // connectDB();
 
-try {
-    await mongoose.connect(`${process.env.MONGO_URI}/resume-builder`)
-    console.log('MongoDB connected successfully!')
-} catch (e) {
-    console.log(`MongoDB Connection Error, ${e}`)
-}
+(async () => {
+    try {
+        await mongoose.connect(`${process.env.MONGO_URI}/resume-builder`)
+        console.log('MongoDB connected successfully!')
+    } catch (e) {
+        console.log(`MongoDB Connection Error, ${e}`)
+    }
+})()
+
 
 app.use(express.json());
 app.use(cookieParser());
