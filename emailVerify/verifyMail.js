@@ -17,6 +17,7 @@ export const verifyMail = async (token, email) => {
 
     const template = handlebars.compile(emailTemplateSource)
     const htmlToSend = template({
+        baseurl: process.env.BASE_URL_FRONTEND,
         token: encodeURIComponent(token),
         year: new Date().getFullYear()
     })
