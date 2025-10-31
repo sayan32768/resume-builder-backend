@@ -143,6 +143,14 @@ export const download = async (req, res) => {
 
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
+        await page.addStyleTag({
+            content: `
+                * {
+                    margin: 0
+                }
+            `
+        });
+
         const pdfBuffer = await page.pdf({
             format: "A4",
             printBackground: true,
