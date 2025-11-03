@@ -6,7 +6,7 @@ export const create = async (req, res) => {
         const id = req.userId
         const data = req.body
 
-        console.log(data)
+        // console.log(data)
 
         const resume = await Resume.create({
             userId: id,
@@ -98,6 +98,7 @@ export const getResumeById = async (req, res) => {
         const resume = await Resume.findOne({ _id: req.params.id, userId: req.userId }).select("-_id -userId -__v -createdAt -updatedAt");
         if (!resume)
             return res.status(404).json({ success: false, message: "Resume not found" });
+        console.log(resume);
 
         res.status(200).json({ success: true, data: resume });
     } catch (error) {

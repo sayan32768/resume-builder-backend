@@ -1,237 +1,99 @@
 import mongoose from "mongoose";
-import { required } from "zod/mini";
 
 const linksSchema = new mongoose.Schema({
     name: {
         type: String,
         enum: ["LINKEDIN", "INSTAGRAM", "GITHUB"],
-        required: true,
     },
-
     link: {
         type: String,
-        required: true,
     }
-})
+});
 
 const personalDetailsSchema = new mongoose.Schema({
-
-    fullName: {
-        type: String,
-        required: true,
-    },
-
-    email: {
-        type: String,
-        trim: true,
-        lowercase: true,
-        required: true,
-    },
-
-    phone: {
-        type: String,
-        required: true,
-    },
-
-    socials: {
-        type: [linksSchema],
-        default: [],
-    },
-
-    address: {
-        type: String,
-    },
-
-    about: {
-        type: String,
-    }
-})
+    fullName: { type: String },
+    email: { type: String, trim: true, lowercase: true },
+    phone: { type: String },
+    socials: { type: [linksSchema], default: [] },
+    address: { type: String },
+    about: { type: String },
+});
 
 const gradesSchema = new mongoose.Schema({
-
-    type: {
-        type: String,
-        enum: ["Percentage", "CGPA"],
-    },
-
-    score: {
-        type: String,
-    },
-
-    message: {
-        type: String,
-        default: ""
-    }
-})
+    type: { type: String, enum: ["Percentage", "CGPA"] },
+    score: { type: String },
+    message: { type: String, default: "" },
+});
 
 const educationDetailsSchema = new mongoose.Schema({
-    name: {
-        type: String,
-    },
-
-    degree: {
-        type: String,
-        required: true,
-    },
-
-    grades: {
-        type: gradesSchema,
-        default: undefined
-    },
-
+    name: { type: String },
+    degree: { type: String },
+    grades: { type: gradesSchema, default: undefined },
     dates: {
         type: {
-            startDate: {
-                type: Date,
-                default: undefined
-            },
-
-            endDate: {
-                type: Date,
-                default: undefined
-            },
+            startDate: { type: Date, default: undefined },
+            endDate: { type: Date, default: undefined },
         },
-        default: undefined
+        default: undefined,
     },
-
-    location: {
-        type: String
-    }
-})
+    location: { type: String },
+});
 
 const projectsSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-
-    description: {
-        type: String,
-        required: true,
-    },
-
-    extraDetails: {
-        type: String,
-    },
-
+    title: { type: String },
+    description: { type: String },
+    extraDetails: { type: String },
     links: {
-        type: [{
-            link: {
-                type: String,
-                required: true
-            }
-        }],
-        default: []
-    }
-})
+        type: [{ link: { type: String } }],
+        default: [],
+    },
+});
 
 const certificationSchema = new mongoose.Schema({
-    issuingAuthority: {
-        type: String,
-        required: true,
-    },
-
-    title: {
-        type: String,
-        required: true,
-    },
-
-    issueDate: {
-        type: Date,
-        default: undefined
-    },
-
-    link: {
-        type: String
-    }
-})
+    issuingAuthority: { type: String },
+    title: { type: String },
+    issueDate: { type: Date, default: undefined },
+    link: { type: String },
+});
 
 const experienceSchema = new mongoose.Schema({
-    companyName: {
-        type: String,
-        required: true,
-    },
-
-    companyAddress: {
-        type: String,
-    },
-
-    position: {
-        type: String,
-    },
-
+    companyName: { type: String },
+    companyAddress: { type: String },
+    position: { type: String },
     dates: {
         type: {
-            startDate: {
-                type: Date,
-                default: undefined
-            },
+            startDate: { type: Date, default: undefined },
+            endDate: { type: Date, default: undefined },
+        },
+        default: undefined,
+    },
+    workDescription: { type: String },
+});
 
-            endDate: {
-                type: Date,
-                default: undefined
+const resumeSchema = new mongoose.Schema(
+    {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        resumeTitle: { type: String },
+        resumeType: { type: String, enum: ["Classic", "Modern"] },
+        personalDetails: { type: personalDetailsSchema },
+        educationDetails: {
+            type: [educationDetailsSchema],
+            default: [{}],
+            validate: {
+                validator: function (v) {
+                    return v.length >= 1;
+                },
+                message: "At least one education entry is required",
             },
         },
-        default: undefined
+        skills: { type: [{ skillName: String }], default: [] },
+        professionalExperience: { type: [experienceSchema] },
+        projects: { type: [projectsSchema] },
+        otherExperience: { type: [experienceSchema] },
+        certifications: { type: [certificationSchema] },
     },
+    { timestamps: true }
+);
 
-    workDescription: {
-        type: String,
-    }
-})
-
-const resumeSchema = new mongoose.Schema({
-
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
-
-    resumeTitle: {
-        type: "String",
-        required: true,
-    },
-
-    resumeType: {
-        type: String,
-        enum: ["Classic", "Modern"],
-        required: true,
-    },
-
-    personalDetails: {
-        type: personalDetailsSchema,
-        required: true,
-    },
-
-    educationDetails: {
-        type: [educationDetailsSchema],
-        required: true,
-        validate: [arr => arr.length > 0, "At least one education is required"]
-    },
-
-    skills: {
-        type: [{
-            skillName: String
-        }],
-        default: []
-    },
-
-    professionalExperience: {
-        type: [experienceSchema],
-    },
-
-    projects: {
-        type: [projectsSchema],
-    },
-
-    otherExperience: {
-        type: [experienceSchema]
-    },
-
-    certifications: {
-        type: [certificationSchema],
-    }
-
-}, { timestamps: true })
 
 export const Resume = mongoose.model("Resume", resumeSchema);
