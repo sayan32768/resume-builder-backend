@@ -1,5 +1,6 @@
 import { Resume } from "../models/resumeModel.js"
 import puppeteer from "puppeteer";
+import puppeteerCore from 'puppeteer-core';
 
 export const create = async (req, res) => {
     try {
@@ -139,7 +140,14 @@ export const download = async (req, res) => {
     try {
         const { htmlContent } = req.body;
 
-        const browser = await puppeteer.launch();
+        const browser = process.env.BASE_URL_FRONTEND === 'http://localhost:5173' ? await puppeteer.launch() :
+
+            await puppeteerCore.launch({
+                headless: true,
+                executablePath: '/usr/bin/chromium',
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+
         const page = await browser.newPage();
 
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });

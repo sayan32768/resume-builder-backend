@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "if [ \"$BASE_URL_FRONTEND\" != \"http://localhost:5173\" ]; then apt-get update && apt-get install -y chromium; fi"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "nodemailer": "^7.0.9",
     "nodemon": "^3.1.10",
     "puppeteer": "^24.27.0",
+    "puppeteer-core": "^24.28.0",
     "serverless-http": "^4.0.0",
     "zod": "^4.1.12"
   }
