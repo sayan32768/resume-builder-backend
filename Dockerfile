@@ -1,11 +1,11 @@
-FROM ghcr.io/puppeteer/puppeteer:24.27.0
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+FROM archlinux:latest
 
 WORKDIR /usr/src/app
 
+RUN pacman -Sy --noconfirm nodejs-lts-jod npm
+RUN pacman -S --noconfirm chromium
 COPY package*.json ./
 RUN npm ci
 COPY . .
+EXPOSE 8000
 CMD ["node", "server.js"]
