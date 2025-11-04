@@ -139,8 +139,9 @@ export const download = async (req, res) => {
     try {
         const { htmlContent } = req.body;
 
+        console.log(puppeteer.executablePath())
         const browser = await puppeteer.launch({
-            executablePath: process.env.NODE_ENV === 'production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
+            executablePath: puppeteer.executablePath(),
             headless: true,
             args: process.env.NODE_ENV === 'production' ? ['--no-sandbox', '--disable-setuid-sandbox', '--single-process', '--no-zygote'] : [],
         });
