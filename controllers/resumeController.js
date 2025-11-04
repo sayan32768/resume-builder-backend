@@ -139,12 +139,10 @@ export const download = async (req, res) => {
     try {
         const { htmlContent } = req.body;
 
-        const browser = process.env.BASE_URL_FRONTEND === 'http://localhost:5173' ? await puppeteer.launch() :
-
-            await puppeteer.launch({
-                headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            });
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
 
         const page = await browser.newPage();
 

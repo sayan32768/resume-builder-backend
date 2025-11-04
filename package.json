@@ -7,8 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js",
-    "postinstall": "if [ \"$BASE_URL_FRONTEND\" != \"http://localhost:5173\" ]; then npx puppeteer browsers install chrome; fi"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
