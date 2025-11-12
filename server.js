@@ -23,6 +23,7 @@ app.use(cors({
 app.use('/user', userRoute)
 app.use('/resume', resumeRoute)
 
+
 // Run the server
 app.listen(PORT, () => {
     connectDB()
