@@ -200,7 +200,7 @@ export const processResume = async (req, res) => {
         });
 
         const response = await axios.post(
-            `${process.env.NODE_ENV === 'production' ? process.env.BASE_URL_AI : process.env.BASE_URL_AI}/process`,
+            `${process.env.NODE_ENV === 'production' ? process.env.BASE_URL_AI : "http://localhost:8000"}/process`,
             formData,
             {
                 headers: {
