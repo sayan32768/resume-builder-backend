@@ -1,12 +1,11 @@
 import { Resume } from "../models/resumeModel.js"
 import puppeteer from "puppeteer";
+import axios from "axios";
 
 export const create = async (req, res) => {
     try {
         const id = req.userId
         const data = req.body
-
-        // console.log(data)
 
         const resume = await Resume.create({
             userId: id,
@@ -98,7 +97,6 @@ export const getResumeById = async (req, res) => {
         const resume = await Resume.findOne({ _id: req.params.id, userId: req.userId }).select("-_id -userId -__v -createdAt -updatedAt");
         if (!resume)
             return res.status(404).json({ success: false, message: "Resume not found" });
-        console.log(resume);
 
         res.status(200).json({ success: true, data: resume });
     } catch (error) {
@@ -171,5 +169,69 @@ export const download = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Error generating PDF");
+    }
+};
+
+export const processResume = async (req, res) => {
+
+    console.log("HEYEYE")
+
+    try {
+        const pdf = req.file;
+        if (!pdf) {
+            return res.status(400).send({
+                error: "No file uploaded",
+                message: "Please upload a PDF file"
+            });
+        }
+
+        if (pdf.mimetype !== "application/pdf") {
+            return res.status(400).send({
+                error: "Invalid file type",
+                message: "Uploaded file must be a PDF"
+            });
+        }
+
+        const FormData = (await import('form-data')).default;
+        const formData = new FormData();
+        formData.append("pdf", pdf.buffer, {
+            filename: pdf.originalname,
+            contentType: "application/pdf"
+        });
+
+        const response = await axios.post(
+            `${process.env.NODE_ENV === 'production' ? process.env.BASE_URL_AI : process.env.BASE_URL_AI}/process`,
+            formData,
+            {
+                headers: {
+                    ...formData.getHeaders(),
+                    "secret": process.env.FASTAPI_INTERNAL_SECRET
+                },
+                maxBodyLength: Infinity,
+                maxContentLength: Infinity,
+                validateStatus: () => true,
+            }
+        );
+
+        if (response.status >= 400) {
+            return res.status(response.status).send({
+                error: "Resume processing failed",
+                fastapi_error: response.data
+            });
+        }
+
+        return res.status(200).send({
+            success: true,
+            resume: response.data
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).send({
+            error: "Node server error",
+            message: "Failed to process resume",
+            details: error.message
+        });
     }
 };
